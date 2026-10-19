@@ -14,7 +14,7 @@ Tienda de ropa responsive creada como proyecto de portafolio. La experiencia de 
 
 ## Requisitos
 
-- Node.js 20.19 o posterior (el proyecto se verificó con Node 24).
+- Node.js 22.12 o posterior (requisito del adaptador moderno de Netlify Functions; verificado con Node 24).
 - npm 10 o posterior.
 
 ## Instalación y ejecución

@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20.19.0" },
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "concurrently -k \"npm:dev:server\" \"npm:dev:client\"",
     "dev:server": "node --watch server/index.js",
@@ -14,6 +16,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@netlify/aws-lambda-compat": "^2.0.2",
     "@netlify/database": "^2.0.1",
     "bcryptjs": "^3.0.2",
     "better-sqlite3": "^12.2.0",

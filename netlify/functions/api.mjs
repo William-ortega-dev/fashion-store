@@ -1,4 +1,5 @@
 import { getConnectionString } from '@netlify/database';
+import { withLambda } from '@netlify/aws-lambda-compat';
 import serverless from 'serverless-http';
 import { createApp } from '../../server/app.js';
 import { createPostgresStore } from '../../server/postgres-store.js';
@@ -19,6 +20,10 @@ async function getHandler() {
   return initialized;
 }
 
-export async function handler(event, context) {
+async function handler(event, context) {
   return (await getHandler())(event, context);
 }
+
+// Run the Express/Lambda adapter on Netlify's modern Functions runtime so
+// platform primitives such as Netlify Database are available automatically.
+export default withLambda(handler);
