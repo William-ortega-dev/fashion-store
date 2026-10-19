@@ -9,7 +9,7 @@ describe('enrutamiento de Netlify Functions', () => {
 
   it('dirige /api al punto de entrada de Express', async () => {
     db = createStore(':memory:');
-    const app = createApp({ db, sessionSecret: 'local-test-secret-that-is-long-enough' });
+    const app = createApp({ db, sessionSecret: 'local-test-secret-that-is-long-enough', staticDir: null });
     const handler = serverless(app, { basePath: '/.netlify/functions/api' });
     const response = await handler({
       httpMethod: 'GET',

@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 import { mapProduct } from './product-model.js';
 
@@ -34,8 +33,6 @@ const checkoutSchema = z.object({
     city: z.string().trim().min(2).max(80),
   }),
 });
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 function validate(schema, payload) {
   const result = schema.safeParse(payload);
   if (!result.success) {
@@ -46,7 +43,7 @@ function validate(schema, payload) {
   return result.data;
 }
 
-export function createApp({ db, sessionSecret = process.env.SESSION_SECRET } = {}) {
+export function createApp({ db, sessionSecret = process.env.SESSION_SECRET, staticDir = path.resolve(process.cwd(), 'dist') } = {}) {
   if (!sessionSecret) {
     if (process.env.NODE_ENV === 'production') throw new Error('SESSION_SECRET must be configured in production.');
     sessionSecret = randomUUID();
@@ -225,12 +222,13 @@ export function createApp({ db, sessionSecret = process.env.SESSION_SECRET } = {
     }
   });
 
-  const staticPath = path.resolve(__dirname, '../dist');
-  app.use(express.static(staticPath));
-  app.get('*path', (req, res, next) => {
-    if (req.path.startsWith('/api/')) return next();
-    return res.sendFile(path.join(staticPath, 'index.html'), (error) => error && next(error));
-  });
+  if (staticDir) {
+    app.use(express.static(staticDir));
+    app.get('*path', (req, res, next) => {
+      if (req.path.startsWith('/api/')) return next();
+      return res.sendFile(path.join(staticDir, 'index.html'), (error) => error && next(error));
+    });
+  }
   app.use((error, _req, res, _next) => {
     if (res.headersSent) return;
     const status = error.status || (['SQLITE_CONSTRAINT_UNIQUE', '23505'].includes(error.code) ? 409 : 500);

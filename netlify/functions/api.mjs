@@ -9,7 +9,7 @@ async function getHandler() {
   if (!initialized) {
     initialized = (async () => {
       const db = await createPostgresStore({ connectionString: getConnectionString() });
-      const app = createApp({ db });
+      const app = createApp({ db, staticDir: null });
       return serverless(app, { basePath: '/.netlify/functions/api' });
     })().catch((error) => {
       initialized = undefined;
