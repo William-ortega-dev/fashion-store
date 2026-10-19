@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@netlify/aws-lambda-compat": "^2.0.2",
+    "@netlify/blobs": "^11.1.4",
     "@netlify/database": "^2.0.1",
     "bcryptjs": "^3.0.2",
     "better-sqlite3": "^12.2.0",

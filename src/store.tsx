@@ -21,6 +21,10 @@ type CartState = {
 
 const AuthContext = createContext<AuthState | null>(null);
 const CartContext = createContext<CartState | null>(null);
+const cartStorageKey = (() => {
+  const tenantSlug = window.location.pathname.match(/^\/tienda\/([^/]+)/)?.[1];
+  return tenantSlug ? `atelier-cart:${decodeURIComponent(tenantSlug)}` : 'atelier-cart';
+})();
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -51,9 +55,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>(() => {
-    try { return JSON.parse(localStorage.getItem('atelier-cart') || '[]') as CartLine[]; } catch { return []; }
+    try { return JSON.parse(localStorage.getItem(cartStorageKey) || '[]') as CartLine[]; } catch { return []; }
   });
-  useEffect(() => { localStorage.setItem('atelier-cart', JSON.stringify(lines)); }, [lines]);
+  useEffect(() => { localStorage.setItem(cartStorageKey, JSON.stringify(lines)); }, [lines]);
   const value = useMemo<CartState>(() => ({
     lines,
     count: lines.reduce((sum, line) => sum + line.quantity, 0),

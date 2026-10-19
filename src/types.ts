@@ -1,4 +1,22 @@
-export type User = { id: string; name: string; email: string; role: 'customer' | 'admin' };
+export type StoreRole = 'customer' | 'owner' | 'admin' | 'seller' | 'inventory_manager' | 'order_manager' | 'custom' | 'superadmin';
+export type User = { id: string; name: string; email: string; role: StoreRole; roleName?: string; permissions?: string[] };
+export type StorefrontBrand = {
+  template: 'minimal' | 'editorial' | 'urbano' | 'moderno' | 'clasico';
+  brandName: string;
+  tagline: string;
+  primaryColor: string;
+  accentColor: string;
+  backgroundColor: string;
+  textColor: string;
+  headingFont: string;
+  bodyFont: string;
+  heroImage: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  logoUrl: string;
+  contactEmail: string;
+};
+export type Storefront = { tenant: { name: string; slug: string }; brand: StorefrontBrand; updatedAt: string | null };
 export type Category = { id: string; name: string; slug: string };
 export type Product = {
   id: string;

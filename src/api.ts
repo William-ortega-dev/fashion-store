@@ -1,5 +1,8 @@
 export async function api<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const response = await fetch(path, {
+  const tenantSlug = window.location.pathname.match(/^\/tienda\/([^/]+)/)?.[1];
+  const requestUrl = new URL(path, window.location.origin);
+  if (tenantSlug && requestUrl.pathname.startsWith('/api/')) requestUrl.searchParams.set('store', decodeURIComponent(tenantSlug));
+  const response = await fetch(requestUrl.pathname + requestUrl.search, {
     ...options,
     credentials: 'include',
     headers: {

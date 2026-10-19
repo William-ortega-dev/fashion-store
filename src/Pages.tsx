@@ -78,7 +78,7 @@ export function AccountPage() {
   const navigate = useNavigate();
   if (!ready) return <div className="page-container loading-line">Un momento…</div>;
   if (!user) return <AuthForm />;
-  return <div className="page-container account-page"><span className="eyebrow">TU ESPACIO</span><h1>Hola, {user.name.split(' ')[0]}.</h1><p>{user.email}</p>{user.role === 'admin' && <Link className="button button-dark" to="/admin">Abrir administración ↗</Link>}<button className="text-link account-signout" onClick={async () => { await signOut(); navigate('/'); }}>Cerrar sesión ↗</button></div>;
+  return <div className="page-container account-page"><span className="eyebrow">TU ESPACIO</span><h1>Hola, {user.name.split(' ')[0]}.</h1><p>{user.email}</p>{user.permissions?.length ? <Link className="button button-dark" to={user.role === 'superadmin' ? '/superadmin' : '/admin'}>{user.role === 'superadmin' ? 'Abrir plataforma' : 'Abrir administración'} ↗</Link> : null}<Link className="text-link account-signout" to="/crear-tienda">Crea tu propia tienda ↗</Link><button className="text-link account-signout" onClick={async () => { await signOut(); navigate('/'); }}>Cerrar sesión ↗</button></div>;
 }
 
 export function CheckoutPage() {
