@@ -167,8 +167,9 @@ export async function createPostgresStore({ connectionString = process.env.NETLI
       }
       if (adminAccount?.email && adminAccount?.password) {
         if (adminAccount.password.length < 16) throw new Error('ADMIN_PASSWORD must contain at least 16 characters.');
+        const adminId = randomUUID();
         await run(seedClient, 'INSERT INTO users (id,name,email,password_hash,role) VALUES (?,?,?,?,?) ON CONFLICT (email) DO NOTHING', [
-          'seed-admin', 'Administración Atelier', adminAccount.email.toLowerCase(), bcrypt.hashSync(adminAccount.password, 12), 'admin',
+          adminId, 'Administración Atelier', adminAccount.email.toLowerCase(), bcrypt.hashSync(adminAccount.password, 12), 'admin',
         ]);
         await run(seedClient, 'INSERT INTO tenant_memberships (tenant_id,user_id,role) SELECT ?,id,\'owner\' FROM users WHERE email=? ON CONFLICT (tenant_id,user_id) DO NOTHING', [DEFAULT_TENANT_ID, adminAccount.email.toLowerCase()]);
       }

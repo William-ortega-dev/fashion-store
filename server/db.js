@@ -157,9 +157,10 @@ export function createStore(databasePath = process.env.DATABASE_PATH || './data/
   if (adminAccount?.email && adminAccount?.password) {
     if (adminAccount.password.length < 16) throw new Error('ADMIN_PASSWORD must contain at least 16 characters.');
     const admin = db.prepare('SELECT id FROM users WHERE email = ?').get(adminAccount.email.toLowerCase());
+    const adminId = admin?.id || randomUUID();
     if (!admin) db.prepare('INSERT INTO users (id,name,email,password_hash,role) VALUES (?,?,?,?,?)')
-      .run('seed-admin', 'Administración Atelier', adminAccount.email.toLowerCase(), bcrypt.hashSync(adminAccount.password, 12), 'admin');
-    membershipInsert.run(DEFAULT_TENANT_ID, admin?.id || 'seed-admin', 'owner');
+      .run(adminId, 'Administración Atelier', adminAccount.email.toLowerCase(), bcrypt.hashSync(adminAccount.password, 12), 'admin');
+    membershipInsert.run(DEFAULT_TENANT_ID, adminId, 'owner');
   }
   if (process.env.SUPERADMIN_EMAIL && process.env.SUPERADMIN_PASSWORD) {
     if (process.env.SUPERADMIN_PASSWORD.length < 16) throw new Error('SUPERADMIN_PASSWORD must contain at least 16 characters.');
